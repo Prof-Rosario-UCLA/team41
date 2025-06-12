@@ -4,20 +4,22 @@ import { AuthProvider, useAuth } from './hooks/Auth';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Wordle from './pages/Wordle';
-import Menu from './pages/Menu'; 
+import Menu from './pages/Menu';
 import NotFound from './pages/NotFound';
+import Banner from './components/Banner'; 
 import './style.css'; 
 
 function App() {
   return (
     <AuthProvider>
       <AppRoutes />
+      <Banner />
     </AuthProvider>
   );
 }
 
 function AppRoutes() {
-  const { isAuthenticated, loading } = useAuth(); 
+  const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-2xl font-bold text-gray-700">Loading authentication...</div>;
@@ -26,7 +28,7 @@ function AppRoutes() {
   return (
     <Router>
       <Routes>
-        <Route path="/games" element={isAuthenticated ? <Menu /> : <Navigate to="/login" />} /> 
+        <Route path="/games" element={isAuthenticated ? <Menu /> : <Navigate to="/login" />} />
         <Route path="/wordle" element={isAuthenticated ? <Wordle /> : <Navigate to="/login" />} />
         <Route path="/login" element={isAuthenticated ? <Navigate to="/games" /> : <Login />} />
         <Route path="/signup" element={isAuthenticated ? <Navigate to="/games" /> : <Signup />} />

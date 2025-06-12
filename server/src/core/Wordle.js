@@ -6,7 +6,8 @@
 */
 
 const MAX_RETRIES = 2;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+
 
 
 import { queryRedisCache, checkRedisCache }  from '../utils/Redis.js';
@@ -16,21 +17,23 @@ import { QueryStatus, ContainedStatus } from '../Enums.js';
 // Check if a word is contained in our word banks
 // First check the local indexed db, then the redis cache, and finally the MongoDB
 export async function isContained(word, wordLength, db) {
-    console.log("s");
     let exists = false;
     let status = ContainedStatus.VALID;
-
+    console.log("parameters ", 
+        word, wordLength, db
+    );
     // Redis, then MongoDB
+    // console.log("IsContained try Redis");
     ({ exists, status } = await isContainedRedis(word, wordLength, db));
-
-    if (exists || status === ContainedStatus.VALID) {
+      // console.log("REDIS Exists, status", exists, status);
+    if (exists && status == ContainedStatus.VALID) {
         return { exists: exists, status: status };
     }
-    console.log("after");
+    console.log("IsContained try Mongo");
     ({ exists, status } = await isContainedMongoDB(word, wordLength, db));
-
+    console.log("Mongo result: ", exists, status);
     if (exists || status === ContainedStatus.VALID) {
-        console.log("Exists, status", exists, status);
+        console.log("RETURN");
         return { exists: exists, status: status };
     }
 
@@ -45,6 +48,9 @@ async function isContainedMongoDB(word, wordLength, db) {
     let attempt = 0;
     while (attempt < MAX_RETRIES) {
         try {
+            console.log("parameters isCOntainedMongo", 
+                word, wordLength, db
+            )
             const found = await checkWordInCollection(word, wordLength, db);
             // This !! deals with the fact that Mongoose's .exists returns null if it doesn't exist as opposed to a boolean for some reason
             exists = !!found;
@@ -63,12 +69,13 @@ async function isContainedMongoDB(word, wordLength, db) {
 }
 
 async function isContainedRedis(word, wordLength, db) {
-
+    
     let attempt = 0;
     while (attempt < MAX_RETRIES) {
         try {
             const found = await checkRedisCache(word, wordLength, db);
-            return { exists: found, status: ContainedStatus.VALID };
+            console.log("Found in Redis Cache:", word, found);
+            return { exists: !!found, status: ContainedStatus.VALID };
         } catch (error) {
             attempt++;
             console.warn(`Attempt ${attempt} to check word in Redis failed: ${error.message}`);
@@ -77,7 +84,7 @@ async function isContainedRedis(word, wordLength, db) {
             await new Promise(res => setTimeout(res, 100 * attempt));
         }
     }
-    
+    console.log("Redis returns false on ", word);
     return { exists: false, status: ContainedStatus.REDIS_QUERY_FAILED };
 }
 
@@ -88,7 +95,7 @@ export async function chooseWord(wordLength, letterRestrict, letterGuarantee, sp
 
     if (theme) {
         console.log("chooseWordThematic");
-        return chooseWordThematic(wordLength, theme, db, prevWords, repeats);
+        return chooseWordThematic(theme, wordLength, db, prevWords, repeats);
     } else {
         console.log("chooseWordRemote");
         return chooseWordRemote(wordLength, letterRestrict, letterGuarantee, specificRestrict, db, prevWords, repeats);
@@ -191,22 +198,29 @@ async function chooseWordThematic(theme, wordLength, db, prevWords, repeats) {
     // TODO: Prompt engineering: This (and the system prompt) can probably be tuned more for better results
     // We're getting decent results with this, but, it could probably be better
     const prompt = `Give a list of real ${wordLength}-letter lowercase words that best fit the theme: "${theme}".
-    If the theme is offensive, respond with only: OFFENSIVE.
-    If the theme is random nonsense (e.g. just unrelated words), respond with only: UNREASONABLE.
-    Otherwise, return at least one matching word. Use exactly one space between words.
+    Return at least one matching word. Use exactly one space between words.
     Only return valid words that are exactly ${wordLength} letters long.
     Return as many words as fit these parameters`;
 
+    console.log("params: ",
+        theme, wordLength, db, prevWords, repeats
+    )
+   
     try {
         const llmWords = await queryOpenAI(prompt);
-        const wordbank = [];
-
+        console.log("LLM:", llmWords);
+        let wordbank = [];
+        let exists;
+        let status;
         for (const word of llmWords) {
-            if (isContained(word, wordLength, db)) {
+            ({exists, status} = await isContained(word, wordLength, db));
+            console.log("in theme:", exists); 
+            if (exists) {
+                console.log("was contained", word);
                 wordbank.push(word);
             }
         }
-
+        console.log("END");
         if (wordbank.length === 0) {
             return {
                 target: "",
@@ -237,9 +251,9 @@ async function chooseWordThematic(theme, wordLength, db, prevWords, repeats) {
 async function queryMongoDB(wordLength, letterRestrict, letterGuarantee, specificRestrict, db) {
     let attempt = 0;
 
-    console.log("queryMongoDB params: ", 
-        wordLength, letterRestrict, letterGuarantee, specificRestrict, db
-    )
+    //console.log("queryMongoDB params: ", 
+     //   wordLength, letterRestrict, letterGuarantee, specificRestrict, db
+    // )
 
     // This should, on the MAX_RETRIESth error, enter the catch and successfully throw
     while (attempt < MAX_RETRIES) {
@@ -334,6 +348,8 @@ async function queryOpenAI(prompt) {
     const API_ENDPOINT = "https://api.openai.com/v1/chat/completions";
     let attempt = 0;
 
+    const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    
     // This should, on the MAX_RETRIESth error, enter the catch and successfully throw
     while (attempt < MAX_RETRIES) {
         try {
@@ -358,8 +374,8 @@ async function queryOpenAI(prompt) {
                         }
                     ],
 
-                    max_tokens: 10,
-                    temperature: 0.75
+                    max_tokens: 25,
+                    temperature: 0.85,
                 })
             });
 
@@ -371,12 +387,13 @@ async function queryOpenAI(prompt) {
                 throw new Error(`OpenAI API error: ${response.status} -- ${errorData.message || response.statusText}`);
             }
 
+
             const data = await response.json();
 
             // Process the response; this should yield the list we want
             const generatedText = data.choices[0]?.message?.content?.trim();
 
-            if (!generatedText) {
+            if (!generatedText || generatedText[0] === "UNREASONABLE" || generatedText[0] == "OFFENSIVE") {
                 throw new Error("OpenAI did not return text in the expected format.");
             }
 

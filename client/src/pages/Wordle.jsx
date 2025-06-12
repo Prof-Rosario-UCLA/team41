@@ -4,7 +4,7 @@ import { WordleProvider } from '../context/Wordle';
 import Grid from '../components/Grid.jsx';
 import Keyboard from '../components/Keyboard.jsx';
 import Parameters from '../components/Parameters.jsx';
-import './Wordle.css'; // Import the new CSS file
+import './Wordle.css'; 
 
 const WordleGame = () => {
     const {

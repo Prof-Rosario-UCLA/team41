@@ -25,7 +25,7 @@ connectDB();
 connectRedis();
 console.log("DOne");
 // Middleware
-app.use(cors()); // For development, allow requests from frontend port
+app.use(cors()); 
 app.use(express.json()); // Parse JSON request bodies
 
 // API Routes

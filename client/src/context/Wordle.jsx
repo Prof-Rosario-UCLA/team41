@@ -158,7 +158,7 @@ export const WordleProvider = ({ children }) => {
             prevGuesses: Array.from(prevGuesses),
             hasWon,
             isOver,
-            gameType: 'wordle', 
+            gameType: gameType, 
             targetWord: targetWord,
         };
 
@@ -260,6 +260,7 @@ export const WordleProvider = ({ children }) => {
                 } else {
                     switch (chosenWord.status) {
                         case "NO_WORDS_FOUND":
+                        case "NO_WORDS_FOUND_THEMATIC":
                             queryErrMsg = `No words found meeting the requirements. Try different settings.`;
                             break;
                         case "ERR_OFFLINE_THEME":
@@ -310,7 +311,7 @@ export const WordleProvider = ({ children }) => {
             return;
         }
         
-        console.log("S");
+
         let status = isValid(guess, wordLength, letterRestrict, letterGuarantee, specificRestrict, db, gameType, greens, yellows, yellowsCount, grays );
         let guessErrMsg; 
 
@@ -318,7 +319,7 @@ export const WordleProvider = ({ children }) => {
 
         if (status.status !== GuessStatus.VALID) {
             console.log(`Guess ${guess} was invalid for reason ${status.status}`);
-            switch (status.status) { // Access status.status here
+            switch (status.status) { 
                 case GuessStatus.ERR_LENGTH:
                     guessErrMsg = `Guess must be ${wordLength} letters long`;
                     break;
@@ -326,28 +327,28 @@ export const WordleProvider = ({ children }) => {
                     guessErrMsg = `${guess} was guessed already!`;
                     break;
                 case GuessStatus.ERR_LETTER_RESTRICT:
-                    guessErrMsg = `${guess} contains restricted letter '${status.letter}'`; // Use status.letter
+                    guessErrMsg = `${guess} contains restricted letter '${status.letter}'`; 
                     break;
                 case GuessStatus.ERR_LETTER_GAURANTEE:
-                    guessErrMsg = `${guess} does not contain required letter '${status.letter}'`; // Use status.letter
+                    guessErrMsg = `${guess} does not contain required letter '${status.letter}'`; 
                     break;
                 case GuessStatus.ERR_SPECIFIC_RESTRICT_1:
-                    guessErrMsg = `${guess} contradicts requirement: letter #${status.index} == ${specificRestrict[status.index]}`; // Use status.index
+                    guessErrMsg = `${guess} contradicts requirement: letter #${status.index} == ${specificRestrict[status.index]}`; 
                     break;
                 case GuessStatus.ERR_SPECIFIC_RESTRICT_2:
-                    guessErrMsg = `${guess} contradicts requirement: letter #${status.index} =/= ${specificRestrict[status.index]}`; // Use status.index
+                    guessErrMsg = `${guess} contradicts requirement: letter #${status.index} =/= ${specificRestrict[status.index]}`; 
                     break;
                 case GuessStatus.ERR_GRAYS:
-                    guessErrMsg = `The target does not include '${status.letter}'`; // Use status.letter
+                    guessErrMsg = `The target does not include '${status.letter}'`; 
                     break;
                 case GuessStatus.ERR_GREENS:
-                    guessErrMsg = `${guess} does not include confirmed letter '${guess[status.index]}' at position ${status.index}`; // Use status.index
+                    guessErrMsg = `${guess} does not include confirmed letter '${targetWord[status.index]}' at position ${status.index}`; 
                     break;
                 case GuessStatus.ERR_YELLOWS_CONTRADICT:
-                    guessErrMsg = `The letter '${guess[status.index]}' does not appear at position ${status.index}`; // Use status.index
+                    guessErrMsg = `The letter '${guess[status.index]}' does not appear at position ${status.index}`; 
                     break;
                 case GuessStatus.ERR_YELLOWS_MISSING:
-                    guessErrMsg = `The target includes at least '${status.size}' of the letter ${status.letter}`; // Use status.size, status.letter
+                    guessErrMsg = `${guess} contains too few of the letter "${status.letter.toUpperCase()}"`; 
                     break;
                 default:
                     guessErrMsg = "Invalid guess based on current game state.";
@@ -398,10 +399,10 @@ export const WordleProvider = ({ children }) => {
 
                 setBoard(updatedBoard);
                 setCurrentGuessIndex(prev => prev + 1);
-                setGreens(newGreens); // Assuming greens was modified by checkGuess or newGreens returned
-                setYellows(newYellows); // Assuming yellows was modified by checkGuess or newYellows returned
-                setYellowsCount(newYellowsCount); // Assuming yellowsCount was modified
-                setGrays(newGrays); // Assuming grays was modified
+                setGreens(newGreens); 
+                setYellows(newYellows); 
+                setYellowsCount(newYellowsCount); 
+                setGrays(newGrays); 
                 setPrevGuesses(newPrevGuesses);
                 setHasWon(justWon);
                 setIsOver(justOver);

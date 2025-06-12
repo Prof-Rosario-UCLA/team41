@@ -19,7 +19,8 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
     // -- regular 'hard' mode: can't make guesses contradicting established information
     // -- extra 'hard' mode: can't make guesses contradicting the parameters either
     // -- extra 'regular' mode: can make guesses contradicitng established info but not the parameters
-    if (mode === 'hard') {
+    // TODO: implement superhard
+    if (mode === 'hard' || mode === 'super-hard') {
         console.log("HARD");
         let yellowsCountCopy = new Map(yellowsCount);
 
@@ -29,6 +30,7 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
 
             // Don't allow guesses of restricted letters
             if (letterRestrict.has(guess[i])) {
+                console.log(1);
                 return {
                     guess: guess,
                     status: GuessStatus.ERR_LETTER_RESTRICT,
@@ -42,6 +44,7 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
 
                 if (targetChar === targetChar.toUpperCase()) {
                     if (guess[i] !== targetChar.toLowerCase()) {
+                        console.log(2);
                         return {
                             guess: guess,
                             status: GuessStatus.ERR_SPECIFIC_RESTRICT_1,
@@ -51,6 +54,7 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
                 } else {
                     // Must differ from this letter
                     if (guess[i] === targetChar) {
+                              console.log(3);
                         return {
                             guess: guess,
                             status: GuessStatus.ERR_SPECIFIC_RESTRICT_2,
@@ -62,6 +66,7 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
 
             // Don't allow gray letters
             if (grays.has(guess[i])) {
+                      console.log(4);
                 return {
                     guess: guess,
                     status: GuessStatus.ERR_GRAYS,
@@ -71,6 +76,7 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
 
             // Require guess to be consistent with greens
             if (greens[i] && greens[i] !== '_' && guess[i] !== greens[i]) {
+                      console.log(5);
                 return {
                     guess: guess,
                     status: GuessStatus.ERR_GREENS,
@@ -81,6 +87,7 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
             // Don't allow a repeated yellow
             // NOTE: this letter might not have actually been found to be a yellow, but a grey coming after a yellow
             if (guess[i] === yellows[i]) {
+                      console.log(5);
                 return {
                     guess: guess,
                     status: GuessStatus.ERR_YELLOWS_CONTRADICT,
@@ -97,6 +104,7 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
 
         // Check for required letters
         for (const letter in letterGuarantee) {
+                  console.log(6);
             if (!letters.has(letter)) {
                 return {
                     guess: guess,
@@ -116,11 +124,11 @@ export function isValid(rawGuess, wordLength, letterRestrict, letterGuarantee, s
                         size++;
                     }
                 }
+                      console.log(8);
                 return {
                     guess: guess,
                     status: GuessStatus.ERR_YELLOWS_MISSING,
                     letter: letter,
-                    size: size,
                 };
             }
         }
