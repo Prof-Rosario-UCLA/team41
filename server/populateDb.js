@@ -7,40 +7,30 @@ import { connectDB } from './src/config/MongoDB.js';
 
 dotenv.config(); 
 
-// TODO: Make these not static; they're static for testing rn
-// Ideally, we should be able to run this from the command line, or do a range 3-10 or something
 const DB_NAME = 1; 
-const WORD_LENGTH = 5;
 const TXT_FILE_PATH = 'wordleWords.txt';
 
-async function populateDatabase() {
-  let dbConnection = null; 
-
+async function populateDatabase(wordLength) {
   try {
-    // Connect to MongoDB
     await connectDB();
-    console.log('Database connection established for population.');
+    console.log(`\n[${wordLength}] Database connection established.`);
 
-    // Ensure collection exists
-    await createWordCollection(DB_NAME, WORD_LENGTH);
+    await createWordCollection(DB_NAME, wordLength);
 
-    // Read words from the text file
     const filePath = path.join(process.cwd(), TXT_FILE_PATH); 
     const fileContent = await fs.readFile(filePath, 'utf-8');
     const words = fileContent.split('\n')
       .map(word => word.trim().toLowerCase()) 
-      .filter(word => word.length === WORD_LENGTH); 
+      .filter(word => word.length === wordLength); 
 
-    console.log(`Found ${words.length} words of length ${WORD_LENGTH} to insert.`);
+    console.log(`[${wordLength}] Found ${words.length} words.`);
 
-    // Insert words into the database
     let insertedCount = 0;
     let duplicateCount = 0;
 
     for (const word of words) {
-      console.log(word);
       if (word) { 
-        const added = await addWordToCollection(word, WORD_LENGTH, DB_NAME);
+        const added = await addWordToCollection(word, wordLength, DB_NAME);
         if (added) {
           insertedCount++;
         } else {
@@ -49,20 +39,22 @@ async function populateDatabase() {
       }
     }
 
-    console.log(`\nPopulation Complete:`);
-    console.log(`Successfully inserted: ${insertedCount} words.`);
-    console.log(`Skipped (duplicates): ${duplicateCount} words.`);
-
+    console.log(`[${wordLength}] Inserted: ${insertedCount}, Duplicates: ${duplicateCount}`);
   } catch (error) {
-    console.error('Error during database population:', error);
+    console.error(`[${wordLength}] Error:`, error);
   } finally {
-    // Close MongoDB connection
-    if (mongoose.connection.readyState === 1) { 
+    if (mongoose.connection.readyState === 1) {
       await mongoose.disconnect();
-      console.log('Disconnected from MongoDB.');
+      console.log(`[${wordLength}] Disconnected from MongoDB.`);
     }
-    process.exit(0); 
   }
 }
 
-populateDatabase();
+async function runAll() {
+  for (let wordLength = 3; wordLength <= 10; wordLength++) {
+    await populateDatabase(wordLength);
+  }
+  process.exit(0);
+}
+
+runAll();
