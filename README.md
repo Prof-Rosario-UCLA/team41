@@ -28,16 +28,16 @@ Selects a new target word based on game settings and restrictions.
 
 Input:
 {
-  "wordLength": 5,               // Number of letters in the word
-  "numGuesses": 6,               // Allowed number of guesses
-  "gameType": "normal",          // "normal" or "hard" mode
-  "letterRestrictions": "",      // Letters that must NOT appear
-  "letterGuarantees": "",        // Letters that MUST appear
-  "specificRestrictions": "",    // Pattern, e.g. "A_PLE"
-  "db": 1,                       // Database number (always 1 for now)
-  "theme": "",                   // Optional theme filter
-  "repeatsAllowed": "no",        // Allow repeated words from the same session 
-  "previousWords": []            // Words already used (to avoid repeats)
+  "wordLength": 5, Number of letters in the word
+  "numGuesses": 6, Allowed number of guesses
+  "gameType": "normal", "normal" or "hard" mode
+  "letterRestrictions": "", Letters that must NOT appear
+  "letterGuarantees": "", Letters that MUST appear
+  "specificRestrictions": "", Pattern, e.g. "A_PLE"
+  "db": 1, Database number (always 1 for now)
+  "theme": "", Optional theme filter
+  "repeatsAllowed": Allow repeated words from the same session 
+  "previousWords": Words already used (to avoid repeats)
 }
 
 Output:
@@ -52,19 +52,19 @@ Validates if a guess exists in the word list.
 
 Input:
 {
-  "word": "crane",               // Word to check
-  "wordLength": 5,               // To find the DB to match against
-  "db": 1                        // Always 1 for now
+  "word": Word to check
+  "wordLength": To find the DB to match against
+  "db": Always 1 for now
 }
 
 Output:
 {
-  "success": true,               // Bool, if request successful (no error)
-  "contained": true,             // Bool, if word exists in the list
-  "status": "VALID"              // VALID, or Error messages
+  "success":  Bool, if request successful (no error)
+  "contained": Bool, if word exists in the list
+  "status": VALID, or Error messages
 }
 
-## 🧪 Notes
+## Notes
 
 - Use `populateDbLight` to seed a smaller word list for faster testing.
 - Backend and frontend both use `npm run dev` to launch.
