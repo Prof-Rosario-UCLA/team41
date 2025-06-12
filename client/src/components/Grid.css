@@ -1,0 +1,100 @@
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    width: 100%;
+    max-width: 65rem;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+}
+
+.grid-rows-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.grid-row {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.grid-cell {
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    border-width: 2px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.25rem;
+    font-weight: 800;
+    transition: all 0.3s ease-in-out;
+    box-sizing: border-box;
+    border-color: #000000;
+    background-color: #d1d5db;
+    color: #000000;
+}
+
+@media (min-width: 768px) {
+    .grid-cell {
+        font-size: 3rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid-cell {
+        font-size: 3.75rem;
+    }
+}
+
+.cell-status-correct {
+    background-color: #22c55e;
+    color: #1f2937;
+}
+
+.cell-status-present {
+    background-color: #eab308;
+    color: #1f2937;
+}
+
+.cell-status-absent {
+    background-color: #6b7280;
+    color: #1f2937;
+}
+
+.cell-status-empty {
+    background-color: #d1d5db;
+    color: #000000;
+}
+
+.current-active-cell {
+    border-color: #3b82f6;
+}
+
+.filled-cell {
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.grid-info-text {
+    color: #374151;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+}

@@ -1,0 +1,53 @@
+
+/* glbal font */
+/* link to use:
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+*/
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f0f2f5; 
+}
+
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a202c; 
+    color: #e2e8f0; 
+  }
+}
+
+.form-radio {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: inline-block;
+  vertical-align: middle;
+  background-origin: border-box;
+  user-select: none;
+  flex-shrink: 0;
+  height: 1.25em;
+  width: 1.25em;
+  color: #4f46e5; 
+  border-radius: 9999px; 
+  border-width: 1px;
+  border-color: #d1d5db; 
+}
+
+.form-radio:checked {
+  background-color: currentColor;
+  border-color: transparent;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+}
+
+.form-radio:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); 
+}

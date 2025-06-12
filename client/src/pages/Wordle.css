@@ -1,0 +1,124 @@
+.wordle-initial-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 1rem;
+}
+
+.loading-message {
+    font-size: 1.25rem;
+    color: #1f2937;
+    margin-top: 1rem;
+}
+
+.wordle-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.game-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #4338ca;
+    margin-bottom: 1.5rem;
+}
+
+.game-loading-text {
+    font-size: 1.125rem;
+    color: #374151;
+}
+
+.game-message {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+}
+
+.message-won {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.message-lost {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.message-info {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.controls-wrapper {
+    width: 100%;
+    max-width: 32rem;
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.guess-input {
+    padding: 0.75rem;
+    border: 2px solid #d1d5db;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    outline: none;
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.guess-input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.submit-button {
+    background-color: #22c55e;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    transform: scale(1);
+    width: 100%;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    border: none;
+}
+
+.submit-button:hover {
+    background-color: #16a34a;
+    transform: scale(1.05);
+}
+
+.change-settings-button {
+    background-color: #d1d5db;
+    color: #1f2937;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    width: 100%;
+    cursor: pointer;
+    border: none;
+}
+
+.change-settings-button:hover {
+    background-color: #9ca3af;
+}

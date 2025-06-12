@@ -1,0 +1,72 @@
+
+
+// WORDLE UTILS
+const WordBank = Object.freeze({
+  NORMAL: 1,
+  STRICT: 2,
+  EXTENDED: 3
+});
+
+const GameMode = Object.freeze({
+  STANDARD: 1,
+  STANDARD_HARD: 2,
+  LENIENT: 3,
+  LENIENT_HARD: 4,
+});
+
+const LetterResult = Object.freeze({
+  GREEN: 1,
+  YELLOW: 2,
+  GRAY: 3,
+  WHITE: 4,
+});
+
+// NOTE: For ERR_LETTER_GUARANTEE and ERR_YELLOWS_MISSING, index is a char!
+const GuessStatus = Object.freeze({
+  VALID: 1,
+  ERR_LENGTH: 2,
+  ERR_PREV: 3,
+  ERR_LETTER_RESTRICT: 4,
+  ERR_LETTER_GAURANTEE: 5,
+  ERR_SPECIFIC_RESTRICT_1: 6,
+  ERR_SPECIFIC_RESTRICT_2: 7,
+  ERR_GRAYS: 8,
+  ERR_GREENS: 9,
+  ERR_YELLOWS_CONTRADICT: 10,
+  ERR_YELLOWS_MISSING: 11,
+  WORD_NOT_FOUND: 12,
+});
+
+const QueryStatus = Object.freeze({
+  VALID: 1,
+  ERR_LENGTH: 2,
+  ERR_LETTER_RESTRICT_SPECIFIC: 3,
+  ERR_LETTER_RESTRICT_GUARANTEE: 4,
+  ERR_LETTER_GUARANTEE_SPECIFIC: 5,
+  ERR_LETTER_GAURANTEE_TOO_LARGE: 6, 
+  ERR_OFFLINE_THEME: 7,
+  NO_WORDS_FOUND: 8,
+  NO_WORDS_FOUND_THEMATIC: 9,
+  LLM_REQUEST_FAILED: 10,
+  ERR_NO_MONGOOSE_MODEL: 11,
+  MONGODB_QUERY_FAILED: 12,
+  
+});
+
+const ContainedStatus = Object.freeze({
+  VALID: 1,
+  ERR_NO_MONGOOSE_MODEL: 2,
+  MONGODB_QUERY_FAILED: 3
+
+});
+
+
+
+
+modules.exports = {
+  WordBank,
+  GameMode,
+  GuessStatus,
+  QueryStatus,
+  ContainedStatus,
+}
